@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>DARK NEXUS - Login & Menu</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        /* CSS GLOBAL dan BODY */
+        body {
+            margin: 0;
+            background-color: black;
+            font-family: 'Arial Black', Arial, sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            /* Latar belakang default (sebelum login) dengan gradasi untuk login */
+            background: #0a0a0a;
+            background-image:
+                linear-gradient(140deg, rgba(130, 80, 255, 0.25), transparent 60%),
+                linear-gradient(220deg, rgba(0, 160, 255, 0.2), transparent 70%);
+        }
+
+        /* --- STYLE FORM LOGIN (Glassmorphism) --- */
+        .login-container {
+            max-width: 300px;
+            background-color: rgba(30, 30, 40, 0.4);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            position: relative; /* Untuk memposisikan pesan kesalahan */
+            margin: 0 auto; /* Menempatkan login container di tengah */
+            left: 0; /* Memastikan tidak ada offset ke kanan */
+            right: 0; /* Memastikan tidak ada offset ke kiri */
+        }
+
+        .login-container h2 {
+            color: white;
+            margin-bottom: 30px;
+            text-transform: none;
+            letter-spacing: normal;
+            font-size: 24px;
+            font-weight: 700;
+            text-shadow: none;
+        }
+
+        /* Input Field Style */
+        .login-container .input-group {
+            position: relative;
+            margin: 20px 0;
+            /* Perbaikan: Atur lebar input-group agar input di dalamnya bisa di-center */
+            width: 100%;
+        }
+
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            /* Lebar input diperkecil agar tidak terlalu lebar */
+            width: 85%;
+            padding: 12px 12px 12px 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: white;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            /* Perbaikan: Tambahkan margin auto untuk centering input */
+            margin: 0 auto;
+            display: block; /* Penting untuk margin auto bekerja */
+            margin-left: -5px; /* Menggeser kotak input lebih ke kiri */
+        }
+
+        .login-container .input-icon {
+            position: absolute;
+            top: 50%;
+            left: 15px; /* Menggeser ikon ke kiri */
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 18px;
+        }
+
+        .login-container input[type="text"]:focus,
+        .login-container input[type="password"]:focus {
+            border-color: #8255ff;
+            outline: none;
+            box-shadow: 0 0 10px rgba(130, 85, 255, 0.5);
+        }
+
+        /* Button Style */
+        .login-container button {
+            width: 100%;
+            padding: 14px;
+            margin-top: 20px;
+            border: none;
+            background-color: #8255ff;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 700;
+            box-shadow: 0 5px 15px rgba(130, 85, 255, 0.4);
+        }
+
+        .login-container button:hover {
+            background-color: #6a44c7;
+            transform: scale(1.01);
+            box-shadow: 0 5px 20px rgba(130, 85, 255, 0.6);
+        }
+
+        /* Link Lupa Password */
+        .forgot-password {
+            margin-top: 15px;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.3s;
+            display: block;
+        }
+
+        .forgot-password:hover {
+            color: #8255ff;
+        }
+
+        /* Style untuk menyembunyikan konten utama sebelum login */
+        #main-content {
+            display: none;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        /* Style Menu Utama (Dari Kode Asli) */
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 0 10px;
+            overflow-y: auto;
+            min-height: 100vh;
+        }
+
+        .video-container {
+            width: 100%;
+            max-width: 380px;
+            height: 150px;
+            margin: 20px auto 10px auto;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .video-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-text-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .video-text {
+            color: white;
+            font-weight: 900;
+            font-size: 16px;
+            letter-spacing: 1.1px;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .musik-row {
+            display: flex;
+            justify-content: space-between;
+            max-width: 380px;
+            margin: 30px auto 30px auto;
+        }
+
+        .musik-button {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .music-container {
+            width: 60px;
+            height: 60px;
+            position: relative;
+            margin: 0 auto 5px auto;
+        }
+
+        .music-circle {
+            width: 60px;
+            height: 60px;
+            border: 1.5px solid #af1515;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .musik-text {
+            font-size: 14px;
+            color: white;
+            user-select: none;
+            display: block;
+        }
+
+        .list-item {
+            max-width: 380px;
+            margin: 10px auto;
+            border: 1.5px solid #af1515;
+            border-radius: 12px;
+            background-color: black;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            user-select: none;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .left-section {
+            display: flex;
+            align-items: center;
+        }
+
+        .left-section img {
+            width: 44px;
+            height: 49px;
+            margin-right: 8px;
+            margin-left: -8px;
+            object-fit: contain;
+        }
+
+        .dark-nexus-text {
+            font-weight: 900;
+            font-size: 17px;
+            letter-spacing: 1.1px;
+            white-space: nowrap;
+            user-select: none;
+        }
+
+        .arrow {
+            width: 10px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 1.5px 1.5px 0;
+            padding: 2.5px;
+            transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            flex-shrink: 0;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            margin-top: 20px;
+            padding-bottom: 20px;
+            user-select: none;
+        }
+
+        .whatsapp-logo {
+            font-size: 30px;
+        }
+
+        #play-pause-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Style untuk ikon mata */
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 5px; /* Menggeser ikon lebih ke kanan */
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Style untuk pesan kesalahan */
+        .error-message {
+            position: absolute;
+            bottom: -30px;
+            left: 0;
+            width: 100%;
+            color: red;
+            font-size: 14px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<div class="login-container" id="login-form">
+    <h2>DARK NEXUS</h2>
+    <div class="input-group">
+        <i class="fas fa-user input-icon" style="color: rgba(255, 255, 255, 0.6);"></i>
+        <input type="text" id="username" placeholder="username" required>
+    </div>
+    <div class="input-group">
+        <i class="fas fa-lock input-icon" style="color: rgba(255, 255, 255, 0.6);"></i>
+        <input type="password" id="password" placeholder="password" required>
+        <i class="fas fa-eye toggle-password" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+    </div>
+    <button onclick="login()">SIGN IN</button>
+    <a href="https://wa.me/62882007293022" class="forgot-password" target="_blank">buy acces?</a>
+    <div class="error-message" id="error-message"></div>
+</div>
+
+<div class="container" id="main-content">
+    <div class="video-container">
+        <video autoplay loop muted>
+            <source src="VID_20251116132951523.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div class="video-text-container">
+        <div class="video-text">DARK NEXUS</div>
+    </div>
+
+    <div class="musik-row">
+        <div class="musik-button" onclick="toggleMusic()">
+            <div class="music-container">
+                <div class="music-circle" id="music-icon">
+                    <i id="play-pause-icon" class="fas fa-music"></i>
+                </div>
+            </div>
+            <span class="musik-text">MUSIK</span>
+        </div>
+        <a href="mailto:raffstoree404@gmail.com" class="musik-button" target="_blank">
+            <div class="music-container">
+                <div class="music-circle">
+                    <i class="fas fa-envelope"></i>
+                </div>
+            </div>
+            <span class="musik-text">SUPORT</span>
+        </a>
+        <a href="https://chat.whatsapp.com/CTKm0vztqvG0FrNE8BrsaF?mode=wwt" class="musik-button" target="_blank">
+            <div class="music-container">
+                <div class="music-circle">
+                    <i class="fab fa-whatsapp whatsapp-logo"></i>
+                </div>
+            </div>
+            <span class="musik-text">GB DEV</span>
+        </a>
+        <a href="https://whatsapp.com/channel/0029Vb6ACu359PwJ7dupT70T" class="musik-button" target="_blank">
+            <div class="music-container">
+                <div class="music-circle">
+                    <i class="fab fa-whatsapp whatsapp-logo"></i>
+                </div>
+            </div>
+            <span class="musik-text">CH DEV</span>
+        </a>
+    </div>
+
+    <a href="https://sxyzraff.netlify.app/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="white-hacker-logo-on-black-background-illustration-vector.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">ALL TOOL CYBER</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://www.mediafire.com/folder/dalu7a5g9dho6/GALLERY+HACK+BY+DARK+LEGEND+³³³" class="list-item"
+       target="_blank">
+        <div class="left-section">
+            <img src="gallery-icon-in-flat-picture-icon-in-white-stroke-vector.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">HACK GALERY</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://onedev-tau.vercel.app/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="mode-gelap-whatsapp-bakal-lebih-cepat-dari-perkiraan-yzh.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">UNBANNED WA</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://raff-store11.github.io/5655/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="mode-gelap-whatsapp-bakal-lebih-cepat-dari-perkiraan-yzh.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">BUG WHATSAPP</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://youareanidiot.cc/safe/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="IMG_20251116_135119.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">VIRUS CHAPTER</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://cyberscurity.vercel.app/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="Screenshot_2025-11-15-19-32-52-06_40deb401b9ffe8e1df2f1cc5ba480b12.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">CYBER SECURITY</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://github.com/4lbH4cker/ALHacking" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="Screenshot_2025-11-15-19-21-44-98_40deb401b9ffe8e1df2f1cc5ba480b12.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">DDOS ATTACK</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://craxsrat.biz/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="ec5e5cae3fafd21a29af607cc8785fd6.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">CRAXS RAT</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://www.kali.org/tools/wifi-honey/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="Screenshot_2025-11-15-19-29-11-14_40deb401b9ffe8e1df2f1cc5ba480b12.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">WIFI HONEY</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://github.com/4lbH4cker/ALHacking" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="Screenshot_2025-11-15-19-53-55-46_40deb401b9ffe8e1df2f1cc5ba480b12.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">PHISING TOOL</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://github.com/4lbH4cker/ALHacking" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="images (1).png" alt="avatar"/>
+            <div class="dark-nexus-text">GMAIL BOMBER</div>
+        </div>
+        <i class="arrow"></i>
+    </a>
+    <a href="https://www.iptrackeronline.com/" class="list-item" target="_blank">
+        <div class="left-section">
+            <img src="1b707f176eef84a057c484cb86829abf.jpg" alt="avatar"/>
+            <div class="dark-nexus-text">IP TRACKER</div>
+        </div>
+        <i class="arrow"></i>
+        <a href="https://dark-legend-333-download-site.vercel.app/" class="list-item" target="_blank">
+            <div class="left-section">
+                <img src="download-icon-white-18.jpg" alt="avatar"/>
+                <div class="dark-nexus-text">VID DOWNLOAD</div>
+            </div>
+            <i class="arrow"></i>
+        </a>
+    </a>
+    <div class="footer">
+        ©SXYZ RAFF V2 - 2025
+    </div>
+</div>
+
+<audio id="myAudio">
+    <source src="ssstik.io_1763202571255.mp3.mp4" type="audio/mpeg">
+    Your browser does not support the audio element.</audio>
+
+<script>
+    var audio = document.getElementById("myAudio");
+    var playPauseIcon = document.getElementById("play-pause-icon");
+    var isPlaying = false;
+    var mainContent = document.getElementById("main-content");
+    var loginForm = document.getElementById("login-form");
+    var bodyElement = document.body;
+    var errorMessage = document.getElementById("error-message");
+
+    function toggleMusic() {
+        if (isPlaying) {
+            audio.pause();
+            playPauseIcon.classList.remove("fa-pause");
+            playPauseIcon.classList.add("fa-music");
+        } else {
+            audio.play().catch(e => console.error("Autoplay diblokir:", e));
+            playPauseIcon.classList.remove("fa-music");
+            playPauseIcon.classList.add("fa-pause");
+        }
+        isPlaying = !isPlaying;
+    }
+
+    audio.onended = function () {
+        playPauseIcon.classList.remove("fa-pause");
+        playPauseIcon.classList.add("fa-music");
+        isPlaying = false;
+    };
+
+    // Fungsi Login
+    function login() {
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+        // Kredensial Login
+        var validUsername = "DARK NEXUS";
+        var validPassword = "dark_nexus910";
+
+        if (username === validUsername && password === validPassword) {
+            // Jika login berhasil
+            loginForm.style.display = "none";
+            mainContent.style.display = "block";
+            // Set background body menjadi hitam murni untuk menu
+            bodyElement.style.background = "black";
+            bodyElement.style.backgroundImage = "none";
+            // Atur ulang body untuk tampilan menu yang bisa di-scroll
+            document.body.style.justifyContent = "flex-start";
+            document.body.style.alignItems = "center";
+        } else {
+            // Jika login gagal
+            errorMessage.textContent = "Username atau password tidak valid, Mohon masukan yang valid dan coba lagi.";
+            setTimeout(function () {
+                errorMessage.textContent = ""; // Menghapus pesan setelah 3 detik
+            }, 3000);
+        }
+    }
+
+    // Fungsi untuk toggle password visibility
+    function togglePasswordVisibility() {
+        var passwordInput = document.getElementById("password");
+        var togglePasswordIcon = document.getElementById("togglePassword");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            togglePasswordIcon.classList.remove("fa-eye");
+            togglePasswordIcon.classList.add("fa-eye-slash");
+        } else {
+            passwordInput.type = "password";
+            togglePasswordIcon.classList.remove("fa-eye-slash");
+            togglePasswordIcon.classList.add("fa-eye");
+        }
+    }
+</script>
+</body>
+</html>
